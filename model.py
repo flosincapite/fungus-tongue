@@ -98,6 +98,42 @@ class NormalizedModel(Model):
     return helpers.weighted_index(self._passive_matrix[signal_index], 1)[0]
 
 
+class Interlocutor(Model):
+
+  def __init__(self, signal_space, meaning_space):
+    self._signal_map = symbol_table.SymbolTable()
+    self._meaning_map = symbol_table.SymbolTable()
+    # world.SignalSpace(alphabet, max_length)
+    self._signal_space = signal_space
+    # world.MeaningSpace(alphabet, max_length)
+    self._meaning_space = meaning_space
+
+  @classmethod
+  def from_zero_matrices(cls, number_signals, number_meanings):
+    """Factory function for a Model with randomly initialized P and Q matrices.
+
+    Arguments:
+      number_signals: Number of signals in the lexicon.
+      number_meanings: Number of objects that can be referenced.
+
+    Returns:
+      A Model with randomly-initialized P ("active") and Q ("passive") matrices.
+    """
+    active_matrix = numpy.array.zeros([number_meanings, number_signals])
+    passive_matrix = numpy.array.zeros(number_signals, number_meanings)
+    return cls(active_matrix, passive_matrix)
+
+  @classmethod
+  def from_association_matrix(cls, association_matrix):
+    return NotImplemented
+
+  def get_signal(self, meaning_index):
+    return NotImplemented
+ 
+  def get_meaning(self, signal_index):
+    return NotImplemented
+
+
 class LabeledModel(Model):
 
   def __init__(self, signal_space, meaning_space):

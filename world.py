@@ -111,10 +111,24 @@ class SignalSpace(object):
   __metaclass__ = HasWildcard
   _wildcard = Wildcard('*')
 
-  def __init__(self, alphabet, max_length):
+  def __init__(self, alphabet, length):
     self._alphabet = frozenset(alphabet)
-    self._max_length = max_length
-    self._min_length = 1
+
+    # Length of signals.
+    #
+    # TODO: Decide on an elegant way to modify g() so as to account for signals
+    # of varying lengths.
+    self._length = length
+
+    self._size = (len(self.alphabet) + 1) ** self.length - 1
+
+  @property
+  def length(self):
+    return self._length
+
+  @property
+  def size(self):
+    return self._size
 
   def get(self):
     return tuple(
@@ -126,5 +140,5 @@ class SignalSpace(object):
     return self._alphabet
 
   @classmethod
-  def distance(self, signal_a, signal_b):
+  def distance(cls, signal_a, signal_b):
     return NotImplemented
