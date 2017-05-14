@@ -1,3 +1,5 @@
+"""Command-line utility for evolutionary language games. """
+
 import fire
 import logging
 
