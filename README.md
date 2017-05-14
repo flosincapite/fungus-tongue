@@ -25,3 +25,7 @@ of six signals to a semantic space of five discrete meanings. Association
 matrices will be inferred with k=5; this means that, for each meaning, a new
 member of the population will sample its parent's responses to ech object in the
 semantic space five times. Learning will terminate after one hundred iterations.
+
+### iterated\_learning\_model
+
+TODO
