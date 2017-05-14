@@ -2,15 +2,16 @@
 
 ## Dependencies
 
-(Python Fire)[https://github.com/google/python-fire]
-(numpy)[http://www.numpy.org/]
+[Python Fire](https://github.com/google/python-fire)
+
+[numpy](http://www.numpy.org/)
 
 ## Models
 
 ### basic\_model
 
 This model implements a version of the evolutionary language game described in
-(Nowak et al.)[basic\_model/README.md].
+[Nowak et al.](basic\_model/README.md).
 
 #### Example Usage
 
