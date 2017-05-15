@@ -4,7 +4,15 @@ import contextlib
 import logging
 
 
-def get_query_context(log_after):
+def get_query_context(log_after, log=logging.info, get_input=raw_input):
+  """Creates a context manager that allows LearningState to be queried.
+  
+  If the input matches the name of a member of the LearningState, that member
+  will be logged. A closed set of queries will allow execution to continue.
+
+  TODO: Why am I dependency-injecting log but not raw_input? The tests are
+  really weird. Maybe just use classes instead of function factories.
+  """
 
   @contextlib.contextmanager
   def query_context(state):
@@ -12,18 +20,23 @@ def get_query_context(log_after):
     
     if not state.generation % log_after:
       while True:
-        query = raw_input('Enter query: ').lower().strip()
-        if query in {'go on', 'get', 'quit', 'q', ''}:
+        query = get_input('Enter query: ').strip()
+        if query.lower() in {'go on', 'get', 'quit', 'q', ''}:
           break
         elif hasattr(state, query):
           log_message = '\n' + repr(getattr(state, query))
         else:
           log_message = 'state does not have an attribute <%s>' % query
-        logging.info(log_message)
+        log(log_message)
 
   return query_context
 
 
-@contextlib.contextmanager
-def void_context(unused_state):
-  yield
+def get_void_context():
+  """Creates a do-nothing, lazy context manager."""
+
+  @contextlib.contextmanager
+  def void_context(unused_state):
+    yield
+
+  return void_context
