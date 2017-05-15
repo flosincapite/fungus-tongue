@@ -2,7 +2,6 @@
 
 import contextlib
 import mock
-import numpy
 import unittest
 
 import learner

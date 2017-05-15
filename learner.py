@@ -32,7 +32,7 @@ class Learner(object):
   
   def __init__(
       self, seed=None, wilt=None, reproduce=None,
-      epoch_context=epoch_contexts.void_context):
+      epoch_context=epoch_contexts.get_void_context()):
     self._seed = seed
     self._wilt = wilt
     self._reproduce = reproduce
@@ -41,10 +41,12 @@ class Learner(object):
 
   @property
   def state(self):
+    if self._state is None:
+      self._state = LearningState(generation=0, individuals=self._seed())
     return self._state
 
   def chatter(self, state=None):
-    while not self._wilt(self._state):
+    while not self._wilt(self.state):
       self.epoch()
 
   def epoch(self, n=1):
@@ -53,8 +55,6 @@ class Learner(object):
       self._epoch()
 
   def _epoch(self):
-    if self._state is None:
-      self._state = LearningState(generation=0, individuals=self._seed())
     with self._epoch_context(self._state):
       self._state.individuals = self._reproduce(self.state)
       self._state.generation += 1
