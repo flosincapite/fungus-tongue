@@ -43,6 +43,19 @@ class LearningStateTest(unittest.TestCase):
     self.assertEquals(['nihility'], state._individuals)
 
 
+class _FakeState(object):
+  """Simple fake implementation of LearningState."""
+
+  def __init__(self, *unused_args, **unused_kwargs):
+    self.generation = 0
+
+  def __eq__(self, other):
+    if isinstance(other, type(self)):
+      return True
+    return NotImplemented
+
+
+@mock.patch.object(learner, 'LearningState', new=_FakeState)
 class LearnerTest(unittest.TestCase):
 
   def setUp(self):
@@ -51,7 +64,7 @@ class LearnerTest(unittest.TestCase):
       wilt_state = {'iterations': iterations}
       def _wilt(*unused_args, **unused_kwargs):
         wilt_state['iterations'] -= 1
-        return wilt_state['iterations'] <= 0
+        return wilt_state['iterations'] < 0
       return _wilt
 
     @contextlib.contextmanager
@@ -60,8 +73,7 @@ class LearnerTest(unittest.TestCase):
 
     self._seed_mock = mock.create_autospec(lambda: None)
     self._wilt = _wilt_function(5)
-    self._reproduce_mock = mock.create_autospec(
-        lambda unused_state: None)
+    self._reproduce_mock = mock.create_autospec(lambda unused_state: None)
       
     self._learner = learner.Learner(
         seed=self._seed_mock,
@@ -71,10 +83,32 @@ class LearnerTest(unittest.TestCase):
   def testEpoch(self):
     self._learner.epoch(3)
 
-    # TODO: This test can be more precise--it should check that the mock was
-    # called with the state object.
-    self.assertEquals(3, self._reproduce_mock.call_count)
-    self.assertEquals
+    # TODO: This test can be more precise, checking that the _FakeState's
+    # generation member was correct at the time it was called. Hard to do that
+    # since mock_calls just gets a shallow copy.
+    self.assertItemsEqual(
+        [
+          mock.call(_FakeState()),
+          mock.call(_FakeState()),
+          mock.call(_FakeState())],
+        self._reproduce_mock.mock_calls)
+
+  def testChatter(self):
+    self._learner.chatter()
+
+    # Five calls because self._wilt terminates after five iterations.
+    #
+    # TODO: This test can be more precise, checking that the _FakeState's
+    # generation member was correct at the time it was called. Hard to do that
+    # since mock_calls just gets a shallow copy.
+    self.assertItemsEqual(
+        [
+          mock.call(_FakeState()),
+          mock.call(_FakeState()),
+          mock.call(_FakeState()),
+          mock.call(_FakeState()),
+          mock.call(_FakeState())],
+        self._reproduce_mock.mock_calls)
 
 
 if __name__ == '__main__':

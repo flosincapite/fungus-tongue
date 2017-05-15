@@ -45,7 +45,7 @@ class Learner(object):
       self._state = LearningState(generation=0, individuals=self._seed())
     return self._state
 
-  def chatter(self, state=None):
+  def chatter(self):
     while not self._wilt(self.state):
       self.epoch()
 
@@ -55,6 +55,6 @@ class Learner(object):
       self._epoch()
 
   def _epoch(self):
-    with self._epoch_context(self._state):
+    with self._epoch_context(self.state):
       self._state.individuals = self._reproduce(self.state)
       self._state.generation += 1
