@@ -160,6 +160,21 @@ class LabeledModel(Model):
     return cls(active_matrix, passive_matrix)
 
   @classmethod
+  def with_holistic_code(cls, signal_space, meaning_space):
+    """Factory function for a Model with randomly initialized P and Q matrices.
+
+    Arguments:
+      number_signals: Number of signals in the lexicon.
+      number_meanings: Number of objects that can be referenced.
+
+    Returns:
+      A Model with randomly-initialized P ("active") and Q ("passive") matrices.
+    """
+    active_matrix = numpy.array.zeros([number_meanings, number_signals])
+    passive_matrix = numpy.array.zeros(number_signals, number_meanings)
+    return cls(active_matrix, passive_matrix)
+
+  @classmethod
   def from_association_matrix(cls, association_matrix):
     return NotImplemented
 
